@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:chart_project/models/barmodel/barmodel.dart';
 import 'package:chart_project/models/linemodel/linemodel.dart';
 import 'package:chart_project/models/piemodel/piemodel.dart';

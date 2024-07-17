@@ -30,7 +30,7 @@ class BarChartDatas extends StatelessWidget {
             minY: 0,
             barGroups: spots,
             titlesData: FlTitlesData(
-              leftTitles: AxisTitles(
+              leftTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: true),
               ),
               bottomTitles: AxisTitles(

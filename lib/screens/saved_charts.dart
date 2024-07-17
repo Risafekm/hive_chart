@@ -4,7 +4,7 @@ import 'package:chart_project/models/barmodel/barmodel.dart';
 import 'package:chart_project/models/linemodel/linemodel.dart';
 import 'package:chart_project/models/piemodel/piemodel.dart';
 import 'package:chart_project/provider/dropdown_provider.dart';
-import 'package:chart_project/screens/view_chart.dart';
+import 'package:chart_project/screens/finalview.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -114,7 +114,7 @@ class SavedCharts extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ViewChart(
+                  builder: (context) => FinalView(
                     chartType: provider.selectChart,
                     xValue: xData,
                     yValue: yData,

@@ -175,57 +175,65 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               height: 50,
               width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  List<String> xValues = [];
-                  List<String> yValues = [];
+              child: Consumer<ProviderDropDown>(
+                builder: (BuildContext context, ProviderDropDown value,
+                    Widget? child) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      List<String> xValues = [];
+                      List<String> yValues = [];
 
-                  if (provider.selectChart == 'Pie Chart 1' ||
-                      provider.selectChart == 'Pie Chart 2') {
-                    yValues = provider.percentage.text.split(',');
-                  } else {
-                    xValues = provider.xAxis.text.split(',');
-                    yValues = provider.yAxis.text.split(',');
-                  }
+                      if (provider.selectChart == 'Pie Chart 1' ||
+                          provider.selectChart == 'Pie Chart 2') {
+                        yValues = provider.percentage.text.split(',');
+                      } else {
+                        xValues = provider.xAxis.text.split(',');
+                        yValues = provider.yAxis.text.split(',');
+                      }
 
-                  // Check if any required field is empty
-                  if ((provider.selectChart.contains('Pie') &&
-                          yValues.isEmpty) ||
-                      (!provider.selectChart.contains('Pie') &&
-                          (xValues.isEmpty || yValues.isEmpty))) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter values for X and Y axes.'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ViewChart(
-                          chartType: provider.selectChart,
-                          xValue: xValues,
-                          yValue: yValues,
-                          percentage: yValues,
+                      // Check if any required field is empty or lengths don't match
+                      if ((provider.selectChart.contains('Pie') &&
+                              yValues.isEmpty) ||
+                          (!provider.selectChart.contains('Pie') &&
+                              (xValues.isEmpty ||
+                                  yValues.isEmpty ||
+                                  xValues.length != yValues.length))) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('enter same length for x aix and y axis'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewChart(
+                              chartType: provider.selectChart,
+                              xValue: xValues,
+                              yValue: yValues,
+                              percentage: yValues,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: const BorderSide(color: Colors.white),
                         ),
                       ),
-                    );
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: const BorderSide(color: Colors.white),
                     ),
-                  ),
-                ),
-                child: const Text(
-                  'View Chart',
-                  style: TextStyle(color: Colors.white),
-                ),
+                    child: const Text(
+                      'View Chart',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(

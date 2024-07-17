@@ -26,11 +26,30 @@ class ViewChart extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<ProviderDropDown>(context, listen: false);
 
-    // Convert input lists to double lists, handling empty inputs gracefully
-    List<double> yValues =
-        yValue.map((e) => double.tryParse(e) ?? 0.0).toList();
-    List<double> xValues =
-        xValue.map((e) => double.tryParse(e) ?? 0.0).toList();
+    // Validate and parse input lists to double lists, handling empty or invalid inputs gracefully
+    List<double> yValues = yValue.where((e) => e.isNotEmpty).map((e) {
+      try {
+        return double.parse(e);
+      } catch (_) {
+        return 0.0;
+      }
+    }).toList();
+
+    List<double> xValues = xValue.where((e) => e.isNotEmpty).map((e) {
+      try {
+        return double.parse(e);
+      } catch (_) {
+        return 0.0;
+      }
+    }).toList();
+
+    List<double> percentages = percentage.where((e) => e.isNotEmpty).map((e) {
+      try {
+        return double.parse(e);
+      } catch (_) {
+        return 0.0;
+      }
+    }).toList();
 
     Widget chartWidget;
 
@@ -53,7 +72,7 @@ class ViewChart extends StatelessWidget {
         break;
       case 'Pie Chart 1':
       case 'Pie Chart 2':
-        chartWidget = percentage.isNotEmpty
+        chartWidget = percentages.isNotEmpty
             ? PieChartDatas(percentage: percentage)
             : const SizedBox.shrink(); // Handle empty input gracefully
         break;
@@ -71,7 +90,7 @@ class ViewChart extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           height: 400,
           width: 500,
           child: chartWidget,
