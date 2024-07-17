@@ -10,11 +10,26 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<ProviderDropDown>(context, listen: false);
+    TextEditingController countController = TextEditingController();
 
-    void _replaceSpacesWithCommas(TextEditingController controller) {
+    void _replaceSpacesWithCommas(TextEditingController controller, int count) {
       String text = controller.text;
       if (text.contains(' ')) {
-        controller.text = text.replaceAll(' ', ',');
+        List<String> values = text.split(' ');
+        if (values.length > count) {
+          values[count - 1] = values[count - 1].replaceAll(' ', '');
+        }
+        controller.text = values.join(',');
+        controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length),
+        );
+      }
+    }
+
+    void _limitInput(TextEditingController controller, int count) {
+      List<String> values = controller.text.split(',');
+      if (values.length > count) {
+        controller.text = values.sublist(0, count).join(',');
         controller.selection = TextSelection.fromPosition(
           TextPosition(offset: controller.text.length),
         );
@@ -55,6 +70,7 @@ class HomeScreen extends StatelessWidget {
                         onChanged: (value) {
                           provider.setChart(value!);
                           provider.clearControllers();
+                          countController.clear();
                         },
                         items: provider.chartList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -70,6 +86,30 @@ class HomeScreen extends StatelessWidget {
               },
             ),
 
+            // TextField for count...
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              child: SizedBox(
+                height: 40,
+                width: 220,
+                child: TextField(
+                  controller: countController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(fontSize: 16),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(),
+                    hintText: "Enter count of values",
+                    hintStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
             // TextField area...
             Container(
               height: 500,
@@ -77,7 +117,7 @@ class HomeScreen extends StatelessWidget {
               margin: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 10),
                   const Text(
                     'Enter numbers using comma',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
@@ -101,8 +141,15 @@ class HomeScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 16),
                                   keyboardType: TextInputType.number,
-                                  onChanged: (text) => _replaceSpacesWithCommas(
-                                      provider.percentage),
+                                  onChanged: (text) {
+                                    if (countController.text.isNotEmpty) {
+                                      int count =
+                                          int.parse(countController.text);
+                                      _replaceSpacesWithCommas(
+                                          provider.percentage, count);
+                                      _limitInput(provider.percentage, count);
+                                    }
+                                  },
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
@@ -119,11 +166,19 @@ class HomeScreen extends StatelessWidget {
                                 height: 40,
                                 width: 220,
                                 child: TextField(
+                                  enabled: countController.text.isEmpty,
                                   controller: provider.xAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
-                                  onChanged: (text) =>
-                                      _replaceSpacesWithCommas(provider.xAxis),
+                                  onChanged: (text) {
+                                    if (countController.text.isNotEmpty) {
+                                      int count =
+                                          int.parse(countController.text);
+                                      _replaceSpacesWithCommas(
+                                          provider.xAxis, count);
+                                      _limitInput(provider.xAxis, count);
+                                    }
+                                  },
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
@@ -140,11 +195,19 @@ class HomeScreen extends StatelessWidget {
                                 height: 40,
                                 width: 220,
                                 child: TextField(
+                                  enabled: countController.text.isEmpty,
                                   controller: provider.yAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
-                                  onChanged: (text) =>
-                                      _replaceSpacesWithCommas(provider.yAxis),
+                                  onChanged: (text) {
+                                    if (countController.text.isNotEmpty) {
+                                      int count =
+                                          int.parse(countController.text);
+                                      _replaceSpacesWithCommas(
+                                          provider.yAxis, count);
+                                      _limitInput(provider.yAxis, count);
+                                    }
+                                  },
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
@@ -208,16 +271,19 @@ class HomeScreen extends StatelessWidget {
                       }
 
                       // Check if any required field is empty or lengths don't match
+                      int count = countController.text.isNotEmpty
+                          ? int.parse(countController.text)
+                          : 0;
                       if ((provider.selectChart.contains('Pie') &&
                               yValues.isEmpty) ||
                           (!provider.selectChart.contains('Pie') &&
                               (xValues.isEmpty ||
                                   yValues.isEmpty ||
-                                  xValues.length != yValues.length))) {
+                                  xValues.length != count ||
+                                  yValues.length != count))) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content:
-                                Text('enter same length for x aix and y axis'),
+                            content: Text('Enter the correct number of values'),
                             backgroundColor: Colors.red,
                           ),
                         );
