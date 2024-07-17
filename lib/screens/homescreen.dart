@@ -10,7 +10,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<ProviderDropDown>(context, listen: false);
-    TextEditingController countController = TextEditingController();
 
     void _replaceSpacesWithCommas(TextEditingController controller, int count) {
       String text = controller.text;
@@ -70,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                         onChanged: (value) {
                           provider.setChart(value!);
                           provider.clearControllers();
-                          countController.clear();
+                          provider.countController.clear();
                         },
                         items: provider.chartList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -94,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                 height: 40,
                 width: 220,
                 child: TextField(
-                  controller: countController,
+                  controller: provider.countController,
                   keyboardType: TextInputType.number,
                   style: const TextStyle(fontSize: 16),
                   decoration: const InputDecoration(
@@ -142,9 +141,10 @@ class HomeScreen extends StatelessWidget {
                                   style: const TextStyle(fontSize: 16),
                                   keyboardType: TextInputType.number,
                                   onChanged: (text) {
-                                    if (countController.text.isNotEmpty) {
-                                      int count =
-                                          int.parse(countController.text);
+                                    if (provider
+                                        .countController.text.isNotEmpty) {
+                                      int count = int.parse(
+                                          provider.countController.text);
                                       _replaceSpacesWithCommas(
                                           provider.percentage, count);
                                       _limitInput(provider.percentage, count);
@@ -166,14 +166,16 @@ class HomeScreen extends StatelessWidget {
                                 height: 40,
                                 width: 220,
                                 child: TextField(
-                                  enabled: countController.text.isEmpty,
+                                  enabled:
+                                      provider.countController.text.isEmpty,
                                   controller: provider.xAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
                                   onChanged: (text) {
-                                    if (countController.text.isNotEmpty) {
-                                      int count =
-                                          int.parse(countController.text);
+                                    if (provider
+                                        .countController.text.isNotEmpty) {
+                                      int count = int.parse(
+                                          provider.countController.text);
                                       _replaceSpacesWithCommas(
                                           provider.xAxis, count);
                                       _limitInput(provider.xAxis, count);
@@ -195,14 +197,16 @@ class HomeScreen extends StatelessWidget {
                                 height: 40,
                                 width: 220,
                                 child: TextField(
-                                  enabled: countController.text.isEmpty,
+                                  enabled:
+                                      provider.countController.text.isEmpty,
                                   controller: provider.yAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
                                   onChanged: (text) {
-                                    if (countController.text.isNotEmpty) {
-                                      int count =
-                                          int.parse(countController.text);
+                                    if (provider
+                                        .countController.text.isNotEmpty) {
+                                      int count = int.parse(
+                                          provider.countController.text);
                                       _replaceSpacesWithCommas(
                                           provider.yAxis, count);
                                       _limitInput(provider.yAxis, count);
@@ -271,8 +275,8 @@ class HomeScreen extends StatelessWidget {
                       }
 
                       // Check if any required field is empty or lengths don't match
-                      int count = countController.text.isNotEmpty
-                          ? int.parse(countController.text)
+                      int count = provider.countController.text.isNotEmpty
+                          ? int.parse(provider.countController.text)
                           : 0;
                       if ((provider.selectChart.contains('Pie') &&
                               yValues.isEmpty) ||

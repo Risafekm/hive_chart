@@ -33,6 +33,7 @@ class ProviderDropDown extends ChangeNotifier {
   TextEditingController xAxis = TextEditingController();
   TextEditingController yAxis = TextEditingController();
   TextEditingController percentage = TextEditingController();
+  TextEditingController countController = TextEditingController();
 
   final Map<String, List<double>> _chartData = {};
 

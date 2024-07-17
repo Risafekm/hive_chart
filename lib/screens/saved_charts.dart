@@ -36,6 +36,7 @@ class SavedCharts extends StatelessWidget {
                   provider.xAxis.clear();
                   provider.yAxis.clear();
                   provider.percentage.clear();
+                  provider.countController.clear();
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
