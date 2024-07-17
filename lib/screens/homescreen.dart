@@ -11,6 +11,16 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<ProviderDropDown>(context, listen: false);
 
+    void _replaceSpacesWithCommas(TextEditingController controller) {
+      String text = controller.text;
+      if (text.contains(' ')) {
+        controller.text = text.replaceAll(' ', ',');
+        controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length),
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -91,6 +101,8 @@ class HomeScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 16),
                                   keyboardType: TextInputType.number,
+                                  onChanged: (text) => _replaceSpacesWithCommas(
+                                      provider.percentage),
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
@@ -110,6 +122,8 @@ class HomeScreen extends StatelessWidget {
                                   controller: provider.xAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
+                                  onChanged: (text) =>
+                                      _replaceSpacesWithCommas(provider.xAxis),
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
@@ -129,6 +143,8 @@ class HomeScreen extends StatelessWidget {
                                   controller: provider.yAxis,
                                   keyboardType: TextInputType.number,
                                   style: const TextStyle(fontSize: 16),
+                                  onChanged: (text) =>
+                                      _replaceSpacesWithCommas(provider.yAxis),
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(),
